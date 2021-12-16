@@ -1,3 +1,5 @@
+package aoc2021day04;
+
 import java.util.*;
 
 public class Bingo {
