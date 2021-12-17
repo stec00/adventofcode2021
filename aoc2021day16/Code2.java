@@ -31,46 +31,36 @@ public class Code2 {
                 String totalLengthBits = binary.substring(pos, pos + 15);
                 pos += 15;
                 int totalLength = Integer.parseInt(totalLengthBits, 2);
+                int subpacketEnd = pos + totalLength;
                 int startPos = pos;
-                while (pos < startPos + totalLength) {
+                boolean firstLoop = true;
+                while (pos < subpacketEnd) {
                     pos = processPacket(binary, pos, newValueWrapper);
-                    switch(type) {
+                    switch (type) {
                         case 0:
-                            valueWrapper[0] = (pos == startPos ? 0 : valueWrapper[0]) + newValueWrapper[0];
+                            valueWrapper[0] = firstLoop ? newValueWrapper[0] : (valueWrapper[0] + newValueWrapper[0]);
                             break;
                         case 1:
-                            valueWrapper[0] = (pos == startPos ? 1 : valueWrapper[0]) * newValueWrapper[0];
+                            valueWrapper[0] = firstLoop ? newValueWrapper[0] : (valueWrapper[0] * newValueWrapper[0]);
                             break;
                         case 2:
-                            valueWrapper[0] = Math.min(
-                                    pos == startPos ? Long.MAX_VALUE : valueWrapper[0], newValueWrapper[0]);
+                            valueWrapper[0] = Math.min(firstLoop ? newValueWrapper[0] : valueWrapper[0], newValueWrapper[0]);
                             break;
                         case 3:
-                            valueWrapper[0] = Math.max(
-                                    pos == startPos ? Long.MAX_VALUE : valueWrapper[0], newValueWrapper[0]);
+                            valueWrapper[0] = Math.max(firstLoop ? newValueWrapper[0] : valueWrapper[0], newValueWrapper[0]);
                             break;
                         case 5:
-                            if (pos == startPos) {
-                                valueWrapper[0] = newValueWrapper[0];
-                            } else {
-                                valueWrapper[0] = valueWrapper[0] < newValueWrapper[0] ? 1 : 0;
-                            }
+                            valueWrapper[0] = firstLoop ? newValueWrapper[0] : (valueWrapper[0] > newValueWrapper[0] ? 1 : 0);
                             break;
                         case 6:
-                            if (pos == startPos) {
-                                valueWrapper[0] = newValueWrapper[0];
-                            } else {
-                                valueWrapper[0] = valueWrapper[0] > newValueWrapper[0] ? 1 : 0;
-                            }
+                            valueWrapper[0] = firstLoop ? newValueWrapper[0] : (valueWrapper[0] < newValueWrapper[0] ? 1 : 0);
                             break;
                         case 7:
-                            if (pos == startPos) {
-                                valueWrapper[0] = newValueWrapper[0];
-                            } else {
-                                valueWrapper[0] = valueWrapper[0] == newValueWrapper[0] ? 1 : 0;
-                            }
+                            valueWrapper[0] = firstLoop ? newValueWrapper[0] : (valueWrapper[0] == newValueWrapper[0] ? 1 : 0);
                             break;
                     }
+
+                    firstLoop = false;
                 }
             } else {
                 String numOfSubpacketsBits = binary.substring(pos, pos + 11);
@@ -78,41 +68,27 @@ public class Code2 {
                 int numOfSubpackets = Integer.parseInt(numOfSubpacketsBits, 2);
                 for (int i = 0; i < numOfSubpackets; i++) {
                     pos = processPacket(binary, pos, newValueWrapper);
-                    switch(type) {
+                    switch (type) {
                         case 0:
-                            valueWrapper[0] = (i == 0 ? 0 : valueWrapper[0]) + newValueWrapper[0];
+                            valueWrapper[0] = i == 0 ? newValueWrapper[0] : (valueWrapper[0] + newValueWrapper[0]);
                             break;
                         case 1:
-                            valueWrapper[0] = (i == 0 ? 1 : valueWrapper[0]) * newValueWrapper[0];
+                            valueWrapper[0] = i == 0 ? newValueWrapper[0] : (valueWrapper[0] * newValueWrapper[0]);
                             break;
                         case 2:
-                            valueWrapper[0] = Math.min(
-                                    i == 0 ? Long.MAX_VALUE : valueWrapper[0], newValueWrapper[0]);
+                            valueWrapper[0] = Math.min(i == 0 ? newValueWrapper[0] : valueWrapper[0], newValueWrapper[0]);
                             break;
                         case 3:
-                            valueWrapper[0] = Math.max(
-                                    i == 0 ? Long.MAX_VALUE : valueWrapper[0], newValueWrapper[0]);
+                            valueWrapper[0] = Math.max(i == 0 ? newValueWrapper[0] : valueWrapper[0], newValueWrapper[0]);
                             break;
                         case 5:
-                            if (i == 0) {
-                                valueWrapper[0] = newValueWrapper[0];
-                            } else {
-                                valueWrapper[0] = valueWrapper[0] < newValueWrapper[0] ? 1 : 0;
-                            }
+                            valueWrapper[0] = i == 0 ? newValueWrapper[0] : (valueWrapper[0] > newValueWrapper[0] ? 1 : 0);
                             break;
                         case 6:
-                            if (i == 0) {
-                                valueWrapper[0] = newValueWrapper[0];
-                            } else {
-                                valueWrapper[0] = valueWrapper[0] > newValueWrapper[0] ? 1 : 0;
-                            }
+                            valueWrapper[0] = i == 0 ? newValueWrapper[0] : (valueWrapper[0] < newValueWrapper[0] ? 1 : 0);
                             break;
                         case 7:
-                            if (i == 0) {
-                                valueWrapper[0] = newValueWrapper[0];
-                            } else {
-                                valueWrapper[0] = valueWrapper[0] == newValueWrapper[0] ? 1 : 0;
-                            }
+                            valueWrapper[0] = i == 0 ? newValueWrapper[0] : (valueWrapper[0] == newValueWrapper[0] ? 1 : 0);
                             break;
                     }
                 }
